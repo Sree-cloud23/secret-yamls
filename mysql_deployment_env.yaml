@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+   app: mariadb
+  name: mariadb-deployment
+spec:
+  selector:
+    matchLabels:
+      app: mariadb
+  template:
+    metadata:
+      labels:
+        app: mariadb
+    spec:
+      containers:
+      - name: mariadb
+        image: docker.io/mariadb:10.4
+        env:
+          - name:  MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name:  mysql-cred
+                key:  MYSQL_ROOT_PASSWORD
+          - name:  MYSQL_USER
+            valueFrom:
+              secretKeyRef:
+                name:  mysql-cred
+                key:  MYSQL_USER
+        # envFrom:
+        #   - secretRef:
+        #      name: mysql-cred
+        ports:
+        - containerPort: 3306
+          protocol: TCP
